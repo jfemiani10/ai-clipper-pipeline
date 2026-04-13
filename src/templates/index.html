@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Clipper</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 AI Clipper</h1>
+      <span class="status-dot" id="health-dot" title="API status"></span>
+    </header>
+
+    <section class="submit-section">
+      <form id="submit-form">
+        <input
+          type="url"
+          id="url-input"
+          placeholder="YouTube or Twitch URL"
+          required
+          autocomplete="off"
+        >
+        <button type="submit" id="submit-btn">Clip it</button>
+      </form>
+      <div id="submit-msg" class="submit-msg"></div>
+    </section>
+
+    <section class="jobs-section">
+      <div class="jobs-header">
+        <h2>Jobs <span id="job-count" class="badge"></span></h2>
+        <div class="view-toggle">
+          <button id="btn-active" class="toggle-btn active" onclick="setView('active')">Active</button>
+          <button id="btn-archive" class="toggle-btn" onclick="setView('archive')">Archive</button>
+        </div>
+      </div>
+      <div id="jobs-list">
+        <div class="loading">Loading jobs…</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const INITIAL_VIEW = "{{ view }}";
+  </script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "name": "Youtube channel moniter(jynxzi)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCjiXtODGCCulmhwypZAWSag"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7adec7ed-b94b-466b-a137-e4bf5d03832d",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"url\": \"{{ $json.link }}\" }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "540d5c5f-6bb6-4059-abfe-345df8675685",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c8d9c904-5b2e-4360-a14e-3e8ca6410e02",
+  "meta": {
+    "instanceId": "bd715c2da0026a011e1650f699c126bf81d21d8b01682de868991a1c640fa335"
+  },
+  "id": "lM37Xl8NWs8X1ZWv",
+  "tags": []
+}

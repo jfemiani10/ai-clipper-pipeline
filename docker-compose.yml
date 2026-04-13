@@ -1,0 +1,81 @@
+services:
+
+  # ---------------------------------------------------------------------------
+  # Redis — job queue backend
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Worker — runs the video processing pipeline via rq
+  # ---------------------------------------------------------------------------
+  worker:
+    build: .
+    restart: unless-stopped
+    command: rq worker default --url redis://redis:6379
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # ---------------------------------------------------------------------------
+  # API — FastAPI webhook endpoint (n8n / external triggers send jobs here)
+  # ---------------------------------------------------------------------------
+  api:
+    build: .
+    restart: unless-stopped
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # n8n — workflow automation (triggers jobs, handles notifications)
+  # ---------------------------------------------------------------------------
+  n8n:
+    image: n8nio/n8n
+    restart: unless-stopped
+    ports:
+      - "5679:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=changeme
+      - N8N_SECURE_COOKIE=false
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  redis_data:
+  n8n_data:

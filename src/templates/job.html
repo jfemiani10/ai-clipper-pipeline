@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job {{ job.job_id[:8] }} — AI Clipper</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="back-link">← All Jobs</a>
+      <h1>🎬 AI Clipper</h1>
+    </header>
+
+    <section class="job-detail">
+      <div class="job-meta">
+        {% if job.title %}<div class="job-title">{{ job.title }}</div>{% endif %}
+        {% if job.uploader %}<div class="job-uploader">{{ job.uploader }}</div>{% endif %}
+        <div class="job-url">{{ job.url }}</div>
+        <div class="job-status status-{{ job.status }}" id="job-status">
+          {{ status_emoji(job.status) }} {{ job.status }}
+        </div>
+        <div class="job-time">Started: {{ job.created_at[:19].replace('T', ' ') }} UTC</div>
+        {% if job.status in ('done', 'failed') %}
+        <div class="job-time">Finished: {{ job.updated_at[:19].replace('T', ' ') }} UTC</div>
+        {% endif %}
+      </div>
+
+      {% if job.error %}
+      <div class="error-box">⚠️ {{ job.error }}</div>
+      {% endif %}
+
+      {% if job.status not in ('done', 'failed') %}
+      <div class="progress-banner" id="progress-banner">
+        Pipeline running… page refreshes automatically.
+      </div>
+      {% endif %}
+
+      <div id="clips-section">
+        {% if job.clips %}
+        <h2>Clips ({{ job.clips | length }})</h2>
+        <div class="clips-grid">
+          {% for clip in job.clips %}
+          <div class="clip-card approval-{{ clip.approval }}" id="clip-{{ loop.index0 }}">
+            <div class="clip-header">
+              <span class="clip-num">Clip {{ loop.index }}</span>
+              <span class="clip-score score-{{ 'high' if clip.score >= 0.85 else 'mid' if clip.score >= 0.7 else 'low' }}">
+                {{ "%.2f"|format(clip.score) }}
+              </span>
+              <span class="clip-approval-badge" id="badge-{{ loop.index0 }}">
+                {{ approval_emoji(clip.approval) }} {{ clip.approval }}
+              </span>
+            </div>
+            <div class="clip-time">{{ "%.1f"|format(clip.start) }}s – {{ "%.1f"|format(clip.end) }}s ({{ "%.0f"|format(clip.end - clip.start) }}s)</div>
+            <div class="clip-reason">{{ clip.reason }}</div>
+            {% if clip.file_deleted %}
+            <div class="clip-deleted">File deleted</div>
+            {% else %}
+            <video class="clip-video" src="/clips/{{ job.job_id }}/clip_{{ '%02d' % loop.index0 }}.mp4" controls preload="none"></video>
+            {% endif %}
+            <div class="clip-actions">
+              {% if not clip.file_deleted %}
+              <button class="btn-approve" onclick="approveClip('{{ job.job_id }}', {{ loop.index0 }})">✅ Approve</button>
+              <button class="btn-reject" onclick="rejectClip('{{ job.job_id }}', {{ loop.index0 }})">❌ Reject</button>
+              <a class="btn-download" href="/clips/{{ job.job_id }}/clip_{{ '%02d' % loop.index0 }}.mp4" download>⬇️ Download</a>
+              {% endif %}
+              {% if clip.youtube_url %}
+              <a class="btn-youtube" href="{{ clip.youtube_url }}" target="_blank">▶️ YouTube</a>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% elif job.status == 'done' %}
+        <p class="no-clips">No clips met the score threshold for this video.</p>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const JOB_ID = "{{ job.job_id }}";
+    const JOB_STATUS = "{{ job.status }}";
+  </script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

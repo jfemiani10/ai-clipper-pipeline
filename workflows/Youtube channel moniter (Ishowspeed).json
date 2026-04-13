@@ -1,0 +1,78 @@
+{
+  "name": "Youtube channel moniter (Ishowspeed)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWsDFcIhY2DBi3GB5uykGXA"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "45e9f50b-29cc-4aa0-b13e-737ecba9cb02",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"url\": \"{{ $json.link }}\" }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e5d8e252-2f8a-43fc-9a41-c4b29bba095e",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ba0d4b61-075e-4576-9e5a-66c9d342ad2e",
+  "meta": {
+    "instanceId": "bd715c2da0026a011e1650f699c126bf81d21d8b01682de868991a1c640fa335"
+  },
+  "id": "hjDVGVW5yHJ1XGHt",
+  "tags": []
+}

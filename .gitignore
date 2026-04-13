@@ -1,0 +1,39 @@
+# Environment — never commit real keys
+.env
+
+# Data and media — can be large and are machine-specific
+data/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+
+# Docker
+.dockerignore
+
+# Virtual environment
+.venv/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/

@@ -1,0 +1,14 @@
+anthropic
+faster-whisper
+yt-dlp
+rq
+fastapi[standard]
+uvicorn[standard]
+structlog
+pydantic
+tenacity
+python-dotenv
+pytest
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2

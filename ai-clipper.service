@@ -1,0 +1,22 @@
+[Unit]
+Description=AI Clipper — Docker Compose Stack
+Documentation=https://github.com/jfemiani10/ai-clipper
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/jonahhome/ai-clipper
+ExecStart=/usr/bin/docker compose up -d --remove-orphans
+ExecStop=/usr/bin/docker compose down
+TimeoutStartSec=300
+TimeoutStopSec=60
+Restart=no
+
+# Use the compose plugin installed in the user's home
+Environment="DOCKER_CONFIG=/home/jonahhome/.docker"
+
+[Install]
+WantedBy=multi-user.target
