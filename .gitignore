@@ -1,6 +1,10 @@
 # Environment — never commit real keys
 .env
 
+# YouTube OAuth credentials — never commit
+config/youtube_token.json
+config/youtube_client_secrets.json
+
 # Data and media — can be large and are machine-specific
 data/
 logs/
