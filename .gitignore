@@ -1,5 +1,6 @@
 # Environment — never commit real keys
 .env
+.envrc
 
 # YouTube OAuth credentials — never commit
 config/youtube_token.json
@@ -11,10 +12,9 @@ logs/
 
 # Python
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.Python
+*.py[codz]
+*$py.class
+*.so
 *.egg
 *.egg-info/
 dist/
@@ -23,12 +23,25 @@ build/
 .venv/
 venv/
 env/
+ENV/
+env.bak/
+venv.bak/
+__pypackages__/
 
-# Docker
-.dockerignore
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
 
-# Virtual environment
-.venv/
+# Type checkers
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
 
 # Editor
 .vscode/
@@ -36,8 +49,7 @@ env/
 *.swp
 *.swo
 .DS_Store
+.ruff_cache/
 
-# Test / coverage
-.pytest_cache/
-.coverage
-htmlcov/
+# Docker
+.dockerignore
