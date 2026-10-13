@@ -182,7 +182,7 @@ curl -X DELETE http://localhost:8000/jobs/{job_id}/clips
 
 ## Dashboard
 
-Access at `http://<tailscale-ip>:8000`. Tailscale IP: `100.72.208.112`.
+Access at `http://<tailscale-ip>:8000` (get the IP with `tailscale ip -4`).
 
 **Active tab:** Jobs currently processing or with unreviewed clips.
 **Archive tab:** Jobs where all clips are approved/rejected. Shows scheduled delete date (updated_at + 7 days). Shows "Files deleted" once the n8n cleanup workflow runs.
@@ -193,7 +193,7 @@ Access at `http://<tailscale-ip>:8000`. Tailscale IP: `100.72.208.112`.
 - **Download** — downloads the clip file
 - **YouTube** button appears once upload is complete, links to the video
 
-**n8n** at `http://100.72.208.112:5679`
+**n8n** at `http://<tailscale-ip>:5679`
 
 ---
 
@@ -359,3 +359,7 @@ watch -n 1 nvidia-smi  # while a job is transcribing
 - [ ] **Postgres migration** — when job volume grows beyond SQLite comfort zone
 - [ ] **Clip score tuning** — adjust `MIN_CLIP_SCORE` in `.env` if too many/few clips
 - [ ] **Multi-language support** — set `WHISPER_LANGUAGE=auto` in `.env`
+
+## Git attribution
+
+NEVER credit Claude or Claude Code anywhere: no `Co-Authored-By: Claude` trailers, no "Generated with Claude Code" lines, no AI attribution of any kind in commits, commit messages, pushes, PR titles/descriptions, tags, or release notes.
